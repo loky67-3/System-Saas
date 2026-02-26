@@ -19,7 +19,7 @@ const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 
-// 🔥 NUEVA PÁGINA MANTENIMIENTO
+// 🔥 Página mantenimiento
 const Maintenance = () => (
   <div
     style={{
@@ -45,21 +45,10 @@ const App = () => {
   const storedTheme = useSelector((state) => state.theme)
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.href.split('?')[1])
-    const theme =
-      urlParams.get('theme') &&
-      urlParams.get('theme').match(/^[A-Za-z0-9\s]+/)[0]
-
-    if (theme) {
-      setColorMode(theme)
+    if (!isColorModeSet()) {
+      setColorMode(storedTheme)
     }
-
-    if (isColorModeSet()) {
-      return
-    }
-
-    setColorMode(storedTheme)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line
 
   return (
     <HashRouter>
@@ -71,22 +60,18 @@ const App = () => {
         }
       >
         <Routes>
-
-          {/* 🔥 Redirige la raíz hacia login */}
+          {/* 🔁 ARRANQUE */}
           <Route path="/" element={<Navigate to="/login" replace />} />
 
-          {/* Rutas públicas */}
+          {/* 🌐 PÚBLICAS */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/maintenance" element={<Maintenance />} />
           <Route path="/404" element={<Page404 />} />
           <Route path="/500" element={<Page500 />} />
 
-          {/* 🔥 Ruta mantenimiento */}
-          <Route path="/maintenance" element={<Maintenance />} />
-
-          {/* Todo lo demás carga el Dashboard */}
+          {/* 🔐 ADMIN / SISTEMA */}
           <Route path="*" element={<DefaultLayout />} />
-
         </Routes>
       </Suspense>
     </HashRouter>
